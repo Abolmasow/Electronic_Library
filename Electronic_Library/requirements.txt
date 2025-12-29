@@ -1,0 +1,14 @@
+Django==4.0.6
+djangorestframework==3.13.1
+django-cors-headers==3.13.0
+django-filter==21.1
+django-celery-beat==2.2.1
+django-celery-results==2.4.0
+psycopg2-binary==2.9.3
+celery==5.2.7
+redis==4.3.4
+reportlab==3.6.12
+openpyxl==3.0.10
+python-docx==0.8.11
+boto3==1.24.6
+Pillow==9.1.1
