@@ -8,7 +8,7 @@ from .models import BackupLog
 
 @shared_task
 def backup_database():
-    """Создание резервной копии базы данных"""
+    """пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ"""
     
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     backup_dir = os.path.join(settings.MEDIA_ROOT, 'backups')
@@ -17,10 +17,10 @@ def backup_database():
     backup_file = os.path.join(backup_dir, f'backup_{timestamp}.sql')
     
     try:
-        # Получение параметров подключения к БД
+        # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ
         db_settings = settings.DATABASES['default']
         
-        # Команда для создания дампа PostgreSQL
+        # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ PostgreSQL
         cmd = [
             'pg_dump',
             '-h', db_settings['HOST'],
@@ -29,20 +29,20 @@ def backup_database():
             '-f', backup_file
         ]
         
-        # Установка переменной окружения с паролем
+        # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         env = os.environ.copy()
         env['PGPASSWORD'] = db_settings['PASSWORD']
         
-        # Выполнение команды
+        # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         start_time = datetime.now()
         result = subprocess.run(cmd, env=env, capture_output=True, text=True)
         end_time = datetime.now()
         
         if result.returncode == 0:
-            # Успешное создание бэкапа
+            # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             file_size = os.path.getsize(backup_file)
             
-            # Логирование успешного выполнения
+            # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             BackupLog.objects.create(
                 file_path=backup_file,
                 file_size=file_size,
@@ -50,15 +50,15 @@ def backup_database():
                 execution_time=(end_time - start_time).seconds
             )
             
-            # Загрузка в облачное хранилище
+            # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             upload_to_cloud(backup_file)
             
-            # Очистка старых бэкапов (оставляем последние 30)
+            # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 30)
             cleanup_old_backups(backup_dir, keep_count=30)
             
             return f"Backup created successfully: {backup_file}"
         else:
-            # Ошибка при создании бэкапа
+            # пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             BackupLog.objects.create(
                 file_path=backup_file,
                 status='error',
@@ -75,9 +75,9 @@ def backup_database():
         return f"Backup failed: {str(e)}"
 
 def upload_to_cloud(file_path):
-    """Загрузка файла в облачное хранилище"""
+    """пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"""
     
-    # Пример для Яндекс.Диска
+    # пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.пїЅпїЅпїЅпїЅпїЅ
     if hasattr(settings, 'YANDEX_DISK_TOKEN'):
         try:
             from yadisk import YaDisk
@@ -90,7 +90,7 @@ def upload_to_cloud(file_path):
         except Exception as e:
             print(f"Failed to upload to Yandex.Disk: {str(e)}")
     
-    # Пример для AWS S3
+    # пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ AWS S3
     if hasattr(settings, 'AWS_ACCESS_KEY_ID'):
         try:
             s3_client = boto3.client(
@@ -112,10 +112,10 @@ def upload_to_cloud(file_path):
     return False
 
 def cleanup_old_backups(backup_dir, keep_count=30):
-    """Удаление старых резервных копий"""
+    """пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ"""
     
     try:
-        # Получение списка файлов бэкапов
+        # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         backup_files = []
         for file_name in os.listdir(backup_dir):
             if file_name.startswith('backup_') and file_name.endswith('.sql'):
@@ -123,10 +123,10 @@ def cleanup_old_backups(backup_dir, keep_count=30):
                 if os.path.isfile(file_path):
                     backup_files.append((file_path, os.path.getmtime(file_path)))
         
-        # Сортировка по дате изменения (сначала старые)
+        # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ)
         backup_files.sort(key=lambda x: x[1])
         
-        # Удаление старых файлов
+        # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if len(backup_files) > keep_count:
             files_to_delete = backup_files[:-keep_count]
             for file_path, _ in files_to_delete:
@@ -139,6 +139,6 @@ def cleanup_old_backups(backup_dir, keep_count=30):
 CELERY_BEAT_SCHEDULE = {
     'daily-backup': {
         'task': 'library.tasks.backup_database',
-        'schedule': 86400.0,  # Каждые 24 часа
+        'schedule': 86400.0,  # пїЅпїЅпїЅпїЅпїЅпїЅ 24 пїЅпїЅпїЅпїЅ
     },
 }

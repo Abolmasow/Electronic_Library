@@ -40,10 +40,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="manage.py" />
-    <Compile Include="Electronic_Library\__init__.py" />
-    <Compile Include="Electronic_Library\settings.py" />
-    <Compile Include="Electronic_Library\urls.py" />
-    <Compile Include="Electronic_Library\wsgi.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="app\" />
@@ -55,7 +51,6 @@
     <Folder Include="app\static\app\scripts\" />
     <Folder Include="library\" />
     <Folder Include="templates\" />
-    <Folder Include="Electronic_Library\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
